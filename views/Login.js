@@ -4,68 +4,20 @@ import {
   View,
   Text,
   Button,
-  AsyncStorage,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import FormTextInput from '../components/FormTextInput';
 import useSignUpForm from '../hooks/LoginHook'
-//import useRegistrationForm from '../hooks/RegistrationHook'
+import mediaAPI from '../hooks/ApiHooks';
 
 
 const Login = (props) => { // props is needed for navigation
 
-  const url_login = 'http://media.mw.metropolia.fi/wbma/login/';
-  const url_regist = 'http://media.mw.metropolia.fi/wbma/users';
-
-  const signInAsync = async (inputs) => {
-
-    const data = {
-      'username': inputs.username,
-      'password': inputs.password,
-    };
-
-    const response = await fetch (url_login, {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers:{'Content-Type': 'application/json'}
-      });
-
-      const json = await response.json();
-
-    await AsyncStorage.setItem('userToken', json.token);
-    await AsyncStorage.setItem('user', JSON.stringify(json.user));
-
-    props.navigation.navigate('App');
-  };
-
-  const registrationAsync = async (inputs) => {
-
-    const data = {
-      'username': inputs.username,
-      'password': inputs.password,
-      'email': inputs.email,
-      'full_name': inputs.full_name,
-    };
-
-    console.log("data",data);
-
-    const response = await fetch (url_regist, {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers:{'Content-Type': 'application/json'}
-      });
-
-      const json = await response.json();
-
-     console.log("json",json);
-
-    signInAsync(inputs);
-
-  };
-
-
-  const {inputs, handleUsernameChange, handlePasswordChange,
+    const {inputs, handleUsernameChange, handlePasswordChange,
     handleEmailChange, handleFull_NameChange} = useSignUpForm();
+
+    const {signInAsync, registerAsync} = mediaAPI();
 
   return (
     <View style={styles.container}>
@@ -86,7 +38,7 @@ const Login = (props) => { // props is needed for navigation
         onChangeText={handlePasswordChange}
         value={inputs.password}
       />
-      <Button title="Sign in" onPress={() => {signInAsync(inputs);} }/>
+      <Button title="Sign in" onPress={() => {signInAsync(inputs,props);} }/>
     </View>
 
     <Text style={styles.headText}>Registration</Text>
@@ -117,7 +69,7 @@ const Login = (props) => { // props is needed for navigation
         onChangeText={handleFull_NameChange}
         value={inputs.full_name}
       />
-      <Button title="Register" onPress={() => {registrationAsync(inputs);} }/>
+      <Button title="Register" onPress={() => {registerAsync(inputs,props);} }/>
     </View>
 
   </View>
@@ -147,5 +99,8 @@ const styles = StyleSheet.create({
 });
 
 // proptypes here
+Login.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default Login;

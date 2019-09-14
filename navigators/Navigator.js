@@ -47,7 +47,7 @@ const StackNavigator = createStackNavigator(
       header: null, // this will hide the header
       },
     },
-    Singe: {
+    Single: {
       screen: Single,
     },
       Logout: {

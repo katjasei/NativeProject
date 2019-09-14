@@ -9,7 +9,10 @@ import {MediaContext} from '../contexts/MediaContext';
 const dataUrl = "http://media.mw.metropolia.fi/wbma/media/";
 
 const List = (props) => {
-const [media, setMedia] = useContext(MediaContext);
+
+const {navigation} = props;
+
+const {media, setMedia} = useContext(MediaContext);
 
   const getMedia = () => {
 
@@ -49,7 +52,7 @@ const [media, setMedia] = useContext(MediaContext);
         dataArray={media}
         renderRow={
           (item) => <ListItem
-            navigation={props.navigation}
+            navigation={navigation}
             singleMedia={item}
           />
         }
@@ -60,6 +63,7 @@ const [media, setMedia] = useContext(MediaContext);
 
 List.propTypes = {
   mediaArray: PropTypes.array,
+  navigation: PropTypes.object,
  };
 
 export default List;

@@ -1,5 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {Image} from 'react-native';
+import PropTypes from 'prop-types';
+import { Content, Text, Card, CardItem,  Left, Body, Container } from 'native-base';
 
 const Single = (props) => {
 
@@ -10,37 +12,32 @@ const Single = (props) => {
 
   return (
 
-    <View style={styles.container} >
-       <Text style={styles.titleStyle}> {title} </Text>
+<Container>
+    <Content>
+      <Card style={{flex: 0}}>
+        <CardItem>
+        <Body>
+        <Body>
+       <Text> {title} </Text>
+       </Body>
+       </Body>
+       </CardItem>
+       <CardItem>
+         <Body>
+         <Body>
        <Image
-        style={styles.imageStyle}
-        source={{uri: img }}
-      >
-       </Image>
-    </View>
+        source={{uri: img }} style={{height: 200, width: 200, flex: 1}}/>
+        </Body>
+       </Body>
+       </CardItem>
+       </Card>
+    </Content>
+</Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 0,
-  },
-
-  titleStyle: {
-  fontWeight: 'bold',
-  fontSize: 20,
-  color:"#1589FF",
-  paddingBottom: 20,
-  },
-
-  imageStyle: {
-  width: 300,
-  height: 300,
-  }
-});
+Single.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default Single;
