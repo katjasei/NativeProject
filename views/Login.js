@@ -5,6 +5,7 @@ import {
   Text,
   Button,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import FormTextInput from '../components/FormTextInput';
 import useSignUpForm from '../hooks/LoginHook'
