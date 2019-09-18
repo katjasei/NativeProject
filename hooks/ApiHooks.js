@@ -112,36 +112,6 @@ const mediaAPI = () => {
     return [user];
   };
 
-  const userFree = async(username) => {
-
-    const response = await fetch(apiUrl+ 'users/username/' + username, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }
-    });
-
-    const json = await response.json();
-    const nameFree = json.available;
-    console.log ("available",nameFree);
-    if (!nameFree) {
-      Alert.alert(
-        'Message',
-        'Username is already in use',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ],
-        {cancelable: false},
-      );
- };
-  };
-
-
   return {
     getAllMedia,
     getThumbnail,
@@ -150,7 +120,6 @@ const mediaAPI = () => {
     getUserFromToken,
     getAvatar,
     userToContext,
-    userFree,
   };
 };
 
