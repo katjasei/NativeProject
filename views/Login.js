@@ -1,151 +1,175 @@
-import React from 'react';
+import React, {useState}  from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  AsyncStorage,
+Button,
+Alert
 } from 'react-native';
-
-import FormTextInput from '../components/FormTextInput';
-import useSignUpForm from '../hooks/LoginHook'
-//import useRegistrationForm from '../hooks/RegistrationHook'
+import PropTypes from 'prop-types';
+import { Container, Content, Form, Item, Input, Label, Text } from 'native-base';
+import validate from 'validate.js';
+import validation from '../validators/Validation';
+import useSignUpForm from '../hooks/LoginHook';
+import mediaAPI from '../hooks/ApiHooks';
 
 
 const Login = (props) => { // props is needed for navigation
 
-  const url_login = 'http://media.mw.metropolia.fi/wbma/login/';
-  const url_regist = 'http://media.mw.metropolia.fi/wbma/users';
+    const [isRegistered, setRegisterState] = useState(true);
+    const {signInAsync, registerAsync, userFree} = mediaAPI();
 
-  const signInAsync = async (inputs) => {
+    const LoginForm = () => {
 
-    const data = {
-      'username': inputs.username,
-      'password': inputs.password,
-    };
+      const {inputs, handleUsernameChange, handlePasswordChange} = useSignUpForm();
 
-    const response = await fetch (url_login, {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers:{'Content-Type': 'application/json'}
-      });
+    return (
+    <Content>
+    <Form>
+        <Text >Login</Text>
+        <Item floatingLabel>
+           <Label>Username</Label>
+          <Input
+            autoCapitalize='none'
+            placeholder='username'
+            onChangeText={handleUsernameChange}
+            value={inputs.username}
 
-      const json = await response.json();
-
-    await AsyncStorage.setItem('userToken', json.token);
-    await AsyncStorage.setItem('user', JSON.stringify(json.user));
-
-    props.navigation.navigate('App');
-  };
-
-  const registrationAsync = async (inputs) => {
-
-    const data = {
-      'username': inputs.username,
-      'password': inputs.password,
-      'email': inputs.email,
-      'full_name': inputs.full_name,
-    };
-
-    console.log("data",data);
-
-    const response = await fetch (url_regist, {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers:{'Content-Type': 'application/json'}
-      });
-
-      const json = await response.json();
-
-     console.log("json",json);
-
-    signInAsync(inputs);
-
-  };
+          />
+          </Item>
+          <Item floatingLabel>
+           <Label>Password</Label>
+          <Input
+            autoCapitalize='none'
+            placeholder='password'
+            secureTextEntry={true}
+            onChangeText={handlePasswordChange}
+            value={inputs.password}
+          />
+          </Item>
+          <Button title="Login" onPress={() => {signInAsync(inputs,props);} }/>
+          <Button title="No account yet?" onPress = {() => {setRegisterState(false);}}  />
+    </Form>
+    </Content>
+      );
+      };
 
 
-  const {inputs, handleUsernameChange, handlePasswordChange,
-    handleEmailChange, handleFull_NameChange} = useSignUpForm();
 
-  return (
-    <View style={styles.container}>
-    <Text style={styles.headText}>Login</Text>
-    <View style={styles.form}>
-      <FormTextInput
+const RegistrationForm = () => {
+
+const {inputs, handleUsernameChange, handlePasswordChange, handleConfirmPasswordChange,
+  handleEmailChange, handleFull_NameChange} = useSignUpForm();
+return(
+<Content>
+  <Form>
+    <Text >Registration</Text>
+    <Item floatingLabel>
+       <Label>Username</Label>
+
+      <Input
         autoCapitalize='none'
         placeholder='username'
         onChangeText={handleUsernameChange}
         value={inputs.username}
+        onEndEditing={(evt) =>
+          {
+              const username = evt.nativeEvent.text;
+              userFree(username);
+          }}
 
       />
-      <FormTextInput
-
-    autoCapitalize='none'
-        placeholder='password'
-        secureTextEntry={true}
-        onChangeText={handlePasswordChange}
-        value={inputs.password}
-      />
-      <Button title="Sign in" onPress={() => {signInAsync(inputs);} }/>
-    </View>
-
-    <Text style={styles.headText}>Registration</Text>
-    <View style={styles.form}>
-      <FormTextInput
-        autoCapitalize='none'
-        placeholder='username'
-        onChangeText={handleUsernameChange}
-        value={inputs.username}
-
-      />
-      <FormTextInput
+      </Item>
+      <Item floatingLabel>
+       <Label>Password</Label>
+      <Input
         autoCapitalize='none'
         placeholder='password'
         secureTextEntry={true}
         onChangeText={handlePasswordChange}
         value={inputs.password}
+        required
       />
-       <FormTextInput
+      </Item>
+
+      <Item floatingLabel>
+      <Label>Confirm password</Label>
+      <Input
+        autoCapitalize='none'
+        placeholder='confirm password'
+        secureTextEntry={true}
+        onChangeText={handleConfirmPasswordChange}
+        value={inputs.confirm_password}
+        required
+
+
+      />
+      </Item>
+
+
+      <Item floatingLabel>
+       <Label>E-mail</Label>
+       <Input
         autoCapitalize='none'
         placeholder='email'
         onChangeText={handleEmailChange}
         value={inputs.email}
+        required
       />
-        <FormTextInput
+      </Item>
+
+      <Item floatingLabel>
+       <Label>Full name</Label>
+        <Input
         autoCapitalize='none'
         placeholder='full name'
         onChangeText={handleFull_NameChange}
         value={inputs.full_name}
       />
-      <Button title="Register" onPress={() => {registrationAsync(inputs);} }/>
-    </View>
+      </Item>
 
-  </View>
+      <Button title="Register" onPress={() => {registerValidation(inputs,props);}}/>
+      <Button title="Login" onPress = {() => {setRegisterState(true);}}  />
+  </Form>
+
+</Content>
+);
+};
+
+const registerValidation = (inputs,props) => {
+
+  const usernameErr = validate({username:inputs.username}, validation);
+  const passwordErr = validate({password:inputs.password}, validation);
+  const confirmPasswordErr = validate({password:inputs.password, confirm_password:inputs.confirm_password}, validation);
+  const emailErr = validate({email:inputs.email}, validation);
+
+if(!usernameErr.username && !passwordErr.password && !confirmPasswordErr.confirm_password && !emailErr.email){
+
+  registerAsync(inputs,props);
+
+}
+else {
+  console.log (usernameErr.email,  passwordErr.password, confirmPasswordErr.confirm_password, emailErr.email );
+  const errArray = [usernameErr.username, passwordErr.password, confirmPasswordErr.confirm_password, emailErr.email];
+  console.log("arraylength", errArray.length);
+  console.log (!usernameErr.username,  !passwordErr.password, !confirmPasswordErr.confirm_password, !emailErr.email );
+  for (let i=0; i< errArray.length; i++) {
+    if (errArray[i]) {
+      alert(errArray[i]);
+    }
+}
+}
+};
+
+
+  return (
+<Container>
+
+{isRegistered ? <LoginForm/>  : <RegistrationForm/>}
+
+</Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 40,
-  },
-
-  form: {
-    width: 200,
-    alignItems: 'center',
-  },
-
-  headText: {
-  fontWeight: 'bold',
-  fontSize: 20,
-  color:"#1589FF",
-  },
-
-});
-
 // proptypes here
-
+Login.propTypes = {
+  navigation: PropTypes.object,
+};
 export default Login;
