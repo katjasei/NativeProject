@@ -45,12 +45,21 @@ const useSignUpForm = () => {
       }));
   };
 
+  const handleFormChange = (form) => {
+    setInputs((inputs) =>
+      ({
+        ...inputs,
+        form: form,
+      }));
+  };
+
   return {
     handleUsernameChange,
     handlePasswordChange,
     handleConfirmPasswordChange,
     handleEmailChange,
     handleFull_NameChange,
+    handleFormChange,
     inputs,
   };
 };

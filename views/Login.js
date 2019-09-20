@@ -1,10 +1,9 @@
-import React, {useState}  from 'react';
+import React, {useState, useEffect}  from 'react';
 import {
-Button,
 Alert
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Container, Content, Form, Item, Input, Label, Text } from 'native-base';
+import { Container, Content, Form, Item, Input, Label, Text, Button } from 'native-base';
 import validate from 'validate.js';
 import validation from '../validators/Validation';
 import useSignUpForm from '../hooks/LoginHook';
@@ -14,6 +13,9 @@ import mediaAPI from '../hooks/ApiHooks';
 const Login = (props) => { // props is needed for navigation
 
     const [isRegistered, setRegisterState] = useState(true);
+
+    useEffect(() => console.log("isRegistered", isRegistered),[isRegistered]);
+
     const {signInAsync, registerAsync, userFree} = mediaAPI();
 
     const LoginForm = () => {
@@ -23,7 +25,7 @@ const Login = (props) => { // props is needed for navigation
     return (
     <Content>
     <Form>
-        <Text >Login</Text>
+        <Text style={{textAlign: 'center', color: "#1589FF", fontSize: 20, fontWeight: "bold"}}>Login</Text>
         <Item floatingLabel>
            <Label>Username</Label>
           <Input
@@ -44,8 +46,8 @@ const Login = (props) => { // props is needed for navigation
             value={inputs.password}
           />
           </Item>
-          <Button title="Login" onPress={() => {signInAsync(inputs,props);} }/>
-          <Button title="No account yet?" onPress = {() => {setRegisterState(false);}}  />
+          <Button primary onPress={() => {signInAsync(inputs,props);} }><Text>Login</Text></Button>
+          <Button primary onPress = {() => setRegisterState(false)}><Text>No account yet?</Text></Button>
     </Form>
     </Content>
       );
@@ -60,7 +62,7 @@ const {inputs, handleUsernameChange, handlePasswordChange, handleConfirmPassword
 return(
 <Content>
   <Form>
-    <Text >Registration</Text>
+    <Text style={{textAlign: 'center', color: "#1589FF", fontSize: 20, fontWeight: "bold"}}>Registration</Text>
     <Item floatingLabel>
        <Label>Username</Label>
 
@@ -125,8 +127,8 @@ return(
       />
       </Item>
 
-      <Button title="Register" onPress={() => {registerValidation(inputs,props);}}/>
-      <Button title="Login" onPress = {() => {setRegisterState(true);}}  />
+      <Button primary onPress={() => {registerValidation(inputs,props);}}><Text>Registration</Text></Button>
+      <Button primary onPress = {() => setRegisterState(true)}><Text>Back to Login</Text></Button>
   </Form>
 
 </Content>
@@ -160,9 +162,11 @@ else {
 
 
   return (
-<Container>
+<Container style={{paddingTop: 100,  justifyContent: 'center', alignItems: 'stretch'}}>
+
 
 {isRegistered ? <LoginForm/>  : <RegistrationForm/>}
+
 
 </Container>
   );
