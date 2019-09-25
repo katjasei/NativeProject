@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 const bootstrapAsync = async (props) => {
+
   async function getToken() {
     const userToken = await AsyncStorage.getItem('userToken');
 

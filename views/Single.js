@@ -2,13 +2,14 @@ import React from 'react';
 import {Image} from 'react-native';
 import PropTypes from 'prop-types';
 import { Content, Text, Card, CardItem,  Left, Body, Container } from 'native-base';
+import mediaAPI from '../hooks/ApiHooks';
 
 const Single = (props) => {
 
   const {navigation} = props;
 
-   const img = navigation.getParam('filename');
-   const title = navigation.getParam('title');
+  const file = navigation.state.params.file;
+ // const {getUserInfo} = mediaAPI();
 
   return (
 
@@ -18,7 +19,7 @@ const Single = (props) => {
         <CardItem>
         <Body>
         <Body>
-       <Text> {title} </Text>
+       <Text> {file.title} </Text>
        </Body>
        </Body>
        </CardItem>
@@ -26,7 +27,7 @@ const Single = (props) => {
          <Body>
          <Body>
        <Image
-        source={{uri: img }} style={{height: 200, width: 200, flex: 1}}/>
+        source={{uri: 'http://media.mw.metropolia.fi/wbma/uploads/' + file.filename }} style={{height: 200, width: 200, flex: 1}}/>
         </Body>
        </Body>
        </CardItem>

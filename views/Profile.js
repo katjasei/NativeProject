@@ -9,18 +9,14 @@ const Profile = (props) => {
 
   const {user} = useContext(MediaContext);
   console.log('user', user);
-  const [avatarImg, setAvatar] = useState(undefined);
   const {getAvatar} = mediaAPI();
-  getAvatar().then((result) => {
-    setAvatar(result);
-  });
 
   const signOutAsync = async () => {
     await AsyncStorage.clear();
     props.navigation.navigate('Auth');
   };
 
-console.log("dugd",avatarImg);
+
 
   return (
 
@@ -30,7 +26,7 @@ console.log("dugd",avatarImg);
         <Text>E-mail:{user.email}</Text>
         <Text>Full name:{user.full_name}</Text>
         <Image
-              source={{uri: avatarImg}} style={{height: 200, width: 200, flex: 1}}/>
+              source={{uri: getAvatar(user)}} style={{height: 200, width: 200, flex: 1}}/>
       <Button title="Logout!" onPress={signOutAsync} />
     </View>
   );

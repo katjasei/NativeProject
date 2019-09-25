@@ -1,5 +1,6 @@
 
 const validation = {
+
   username: {
     presence: {
       message: '^Please enter an username'
@@ -23,6 +24,7 @@ const validation = {
   },
 
   confirm_password: {
+
     equality: 'password',
   },
 
@@ -33,7 +35,8 @@ const validation = {
     email: {
       message: '^Please enter a valid email address'
     }
-  }
+  },
+
 };
 
 export default validation;

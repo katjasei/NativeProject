@@ -34,7 +34,7 @@ const fetchPostUrl = async (url, data) => {
 
 const mediaAPI = () => {
   const getAllMedia = () => {
-    const [media, setMedia] = useContext(MediaContext);
+    const {media, setMedia} = useContext(MediaContext);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       fetchGetUrl(apiUrl + 'media').then((json) => {
@@ -44,6 +44,7 @@ const mediaAPI = () => {
     }, []);
     return [media, loading];
   };
+
 
   const getThumbnail = (url) => {
     const [thumbnails, setThumbnails] = useState({});
@@ -87,16 +88,16 @@ const mediaAPI = () => {
   };
 
 
-  const getAvatar = () => {
-
-    const {user} = useContext(MediaContext);
-    const [avatar, setAvatar] = useState({});
+  const getAvatar = (user) => {
+    const [avatar, setAvatar] = useState('http://placekitten.com/100/100');
     console.log('avatar', apiUrl + 'tags/avatar_' + user.user_id);
-    return fetchGetUrl(apiUrl + 'tags/avatar_' + user.user_id).then((json) => {
-      console.log('avatarjson', json[0].filename);
-      setAvatar(apiUrl + 'uploads/' + json[0].filename);
-      return avatar;
-    });
+    useEffect(() => {
+      fetchGetUrl(apiUrl + 'tags/avatar_' + user.user_id).then((json) => {
+        console.log('avatarjson', json[0].filename);
+        setAvatar(apiUrl + 'uploads/' + json[0].filename);
+      });
+    }, []);
+    return avatar;
   };
 
   const userToContext = async () => { // Call this when app starts (= Home.js)
@@ -115,33 +116,53 @@ const mediaAPI = () => {
 
   const userFree = async(username) => {
 
-    const response = await fetch(apiUrl+ 'users/username/' + username, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+    const json = await fetchGetUrl(apiUrl + 'users/username/' + username);
+    if (!json.error) {
+      if (json.available) {
+        return 'Username ' + json.username + ' is available. ';
+      } else {
+        return 'Username ' + json.username + ' is not available. ';
       }
-    });
-
-    const json = await response.json();
-    const nameFree = json.available;
-    console.log ("available",nameFree);
-    if (!nameFree) {
-      Alert.alert(
-        'Message',
-        'Username is already in use',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ],
-        {cancelable: false},
-      );
- };
+    } else {
+      console.log(json.error);
+    }
   };
 
+
+  const fetchUploadUrl = async (url, data) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    console.log('fetchUploadUrl', url, data, userToken);
+    const response = await fetch(apiUrl + url, {
+      method: 'POST',
+      headers: {
+        'content-type': 'multipart/form-data',
+        'x-access-token':userToken,
+      },
+      body: data,
+    });
+    let json = {error: 'oops'};
+    if (response.ok) {
+      json = await response.json();
+      console.log('fetchUploadUrl json', json);
+    }
+    return json;
+  };
+
+
+  const uploadFile = async (formData) => {
+    return fetchUploadUrl('media', formData).then((json) => {
+      return json;
+    });
+  };
+
+  const updatedContent = (setMedia) => {
+
+    fetchGetUrl(apiUrl + 'media').then((json) => {
+    setMedia(json);
+
+        });
+
+  };
 
   return {
     getAllMedia,
@@ -152,6 +173,8 @@ const mediaAPI = () => {
     getAvatar,
     userToContext,
     userFree,
+    uploadFile,
+    updatedContent,
   };
 };
 

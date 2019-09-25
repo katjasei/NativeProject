@@ -1,65 +1,28 @@
-import React, {useContext, useEffect} from 'react';
-import {FlatList} from 'react-native';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {List as BaseList} from 'native-base';
-
 import ListItem from './ListItem';
-import {MediaContext} from '../contexts/MediaContext';
-
-const dataUrl = "http://media.mw.metropolia.fi/wbma/media/";
+import mediaAPI from '../hooks/ApiHooks';
 
 const List = (props) => {
-const [media, setMedia] = useContext(MediaContext);
 
-  const getMedia = () => {
-
-    mediaArray=[];
-
-    fetch(dataUrl)
-    .then((response) => {
-      return response.json();
-    })
-
-    .then((result) => {
-
-      result.forEach(element => {
-
-        let id_element = element.file_id;
+  const {navigation} = props;
+  const {getAllMedia} = mediaAPI();
+  const [media, loading] = getAllMedia();
 
 
-        fetch(dataUrl + id_element)
-        .then((response) => {
-          return response.json();
-        })
-        .then((result) => {
-
-           mediaArray.push(result);
-           setMedia(mediaArray);
-        });
-
-      });
-
-    });
-};
-
-  useEffect(() => getMedia(), []);
-
-  return(
+  return (
     <BaseList
-        dataArray={media}
-        renderRow={
-          (item) => <ListItem
-            navigation={props.navigation}
-            singleMedia={item}
-          />
-        }
-        keyExtractor={(item, index) => index.toString()}
-      />
+      dataArray={media}
+      renderRow={(item) =>
+        <ListItem navigation={navigation} singleMedia={item} />}
+      keyExtractor={(item, index) => index.toString()}
+    />
   );
 };
 
 List.propTypes = {
-  mediaArray: PropTypes.array,
- };
+  navigation: PropTypes.object,
+};
 
 export default List;

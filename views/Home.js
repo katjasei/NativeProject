@@ -5,9 +5,16 @@ import {StyleSheet,
 
 
 import List from '../components/List';
-
+import mediaAPI from '../hooks/ApiHooks';
 
 const Home = (props) => {
+
+  const {userToContext} = mediaAPI();
+
+  userToContext().then((user) => {
+    console.log('usercontext', user);
+  });
+
   const {navigation} = props;
   return (
     <View style={styles.container}>
