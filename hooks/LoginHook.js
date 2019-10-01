@@ -78,7 +78,7 @@ const useSignUpForm = () => {
   const handlePasswordChange = (text) => {
 
     const passwordError = validator('password', text);
-    console.log('passwordError', passwordError);
+   // console.log('passwordError', passwordError);
     setErrors((errors) => ({
       ...errors,
       password: passwordError,
@@ -131,7 +131,7 @@ const useSignUpForm = () => {
     const emailError = validator('email', inputs.email);
     const confirmError = validator('confirm_password', {password: inputs.password, confirm_password: inputs.confirm_password});
 
-    console.log("errors", usernameError,passwordError, emailError, confirmError);
+   // console.log("errors", usernameError,passwordError, emailError, confirmError);
 
     setErrors((errors) => ({
       ...errors,
@@ -147,7 +147,7 @@ const useSignUpForm = () => {
   };
 
   const checkUserAvailable = (event) => {
-    console.log('chek user', event.nativeEvent.text);
+    //console.log('chek user', event.nativeEvent.text);
     userFree(event.nativeEvent.text).then((resp) => {
       setErrors((errors) => ({
         ...errors,

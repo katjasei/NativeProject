@@ -125,7 +125,7 @@ const useUploadForm = () => {
     fd.append('title', inputs.title);
     fd.append('description', inputs.description);
 
-    //console.log(uploadFile(fd));
+    console.log(uploadFile(fd));
   };
 
   return {

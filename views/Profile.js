@@ -1,14 +1,19 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Text, Button, AsyncStorage, Image} from 'react-native';
+import {StyleSheet, View,  AsyncStorage, Image} from 'react-native';
 import PropTypes from 'prop-types';
+import {
 
+  Text,
+  Button,
+
+} from 'native-base';
 import {MediaContext} from '../contexts/MediaContext';
 import mediaAPI from '../hooks/ApiHooks';
 
 const Profile = (props) => {
 
   const {user} = useContext(MediaContext);
-  console.log('user', user);
+ // console.log('user', user);
   const {getAvatar} = mediaAPI();
 
   const signOutAsync = async () => {
@@ -26,8 +31,17 @@ const Profile = (props) => {
         <Text>E-mail:{user.email}</Text>
         <Text>Full name:{user.full_name}</Text>
         <Image
-              source={{uri: getAvatar(user)}} style={{height: 200, width: 200, flex: 1}}/>
-      <Button title="Logout!" onPress={signOutAsync} />
+              source={{uri: getAvatar(user)}} style={{borderRadius: 50,
+                width: '100%',
+                height: 200,}}/>
+                <Button
+                onPress={() => {
+                  props.navigation.navigate('MyFiles');
+                }}
+              >
+                <Text>My files</Text>
+              </Button>
+      <Button onPress={signOutAsync} ><Text>Logout</Text></Button>
     </View>
   );
 };

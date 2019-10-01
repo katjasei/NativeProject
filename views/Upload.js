@@ -63,19 +63,18 @@ const Upload = (props) => {
   }
 
 
+
   const UploadWithRedirection = () =>{
-
-  if (validateOnUpload()) {
-
-  handleUpload(file);
   setMedia([]);
 
-  console.log("meeeeedddddiaaa", media);
-
+  if (validateOnUpload()) {
+  handleUpload(file);
   setTimeout(() => {
+  clearWholeForm();
   updatedContent(setMedia);
   navigation.navigate("Home");
   }, 2000);
+
   };
 
   };

@@ -6,20 +6,20 @@ const apiUrl = 'http://media.mw.metropolia.fi/wbma/';
 
 const fetchGetUrl = async (url) => {
   const userToken = await AsyncStorage.getItem('userToken');
-  console.log('fetchGetUrl', url);
+  //console.log('fetchGetUrl', url);
   const response = await fetch(url, {
     headers: {
       'x-access-token': userToken,
     },
   });
   const json = await response.json();
-  console.log('fetchUrl json', json);
+  //console.log('fetchUrl json', json);
   return json;
 };
 
 const fetchPostUrl = async (url, data) => {
-  console.log('fetchPostUrl', url);
-  console.log('fetchPostUrl data', data);
+  //console.log('fetchPostUrl', url);
+  //console.log('fetchPostUrl data', data);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -28,7 +28,7 @@ const fetchPostUrl = async (url, data) => {
     body: JSON.stringify(data),
   });
   const json = await response.json();
-  console.log('fetchPostUrl json', json);
+  //console.log('fetchPostUrl json', json);
   return json;
 };
 
@@ -82,7 +82,7 @@ const mediaAPI = () => {
 
   const getUserFromToken = async () => {
     fetchGetUrl(apiUrl + 'users/user').then((json) => {
-      console.log('getUserTOken', json);
+      //console.log('getUserTOken', json);
       AsyncStorage.setItem('user', JSON.stringify(json));
     });
   };
@@ -90,10 +90,10 @@ const mediaAPI = () => {
 
   const getAvatar = (user) => {
     const [avatar, setAvatar] = useState('http://placekitten.com/100/100');
-    console.log('avatar', apiUrl + 'tags/avatar_' + user.user_id);
+    //console.log('avatar', apiUrl + 'tags/avatar_' + user.user_id);
     useEffect(() => {
       fetchGetUrl(apiUrl + 'tags/avatar_' + user.user_id).then((json) => {
-        console.log('avatarjson', json[0].filename);
+        //console.log('avatarjson', json[0].filename);
         setAvatar(apiUrl + 'uploads/' + json[0].filename);
       });
     }, []);
@@ -104,7 +104,7 @@ const mediaAPI = () => {
     const {user, setUser} = useContext(MediaContext);
     const getFromStorage = async () => {
       const storageUser = JSON.parse(await AsyncStorage.getItem('user'));
-      console.log('storage', storageUser);
+      //console.log('storage', storageUser);
       setUser(storageUser);
     }
     useEffect(() => {
@@ -124,14 +124,14 @@ const mediaAPI = () => {
         return 'Username ' + json.username + ' is not available. ';
       }
     } else {
-      console.log(json.error);
+      //console.log(json.error);
     }
   };
 
 
   const fetchUploadUrl = async (url, data) => {
     const userToken = await AsyncStorage.getItem('userToken');
-    console.log('fetchUploadUrl', url, data, userToken);
+    //console.log('fetchUploadUrl', url, data, userToken);
     const response = await fetch(apiUrl + url, {
       method: 'POST',
       headers: {
@@ -143,7 +143,7 @@ const mediaAPI = () => {
     let json = {error: 'oops'};
     if (response.ok) {
       json = await response.json();
-      console.log('fetchUploadUrl json', json);
+      //console.log('fetchUploadUrl json', json);
     }
     return json;
   };
@@ -164,7 +164,42 @@ const mediaAPI = () => {
 
   };
 
+  const getUserInfo = (id) => {
+
+    [userInfo, setUserInfo] = useState({});
+    useEffect(() => {
+      fetchGetUrl(apiUrl + 'users/' + id).then((json) => {
+        setUserInfo(json);
+      });
+    }, []);
+
+    return userInfo;
+  };
+
+  const getAllMyMedia = () => {
+    const {myMedia, setMyMedia} = useContext(MediaContext);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      fetchGetUrl(apiUrl + 'media/user').then((json) => {
+        setMyMedia(json);
+        setLoading(false);
+      });
+    }, []);
+    return [myMedia, loading];
+  };
+
+  const deleteMedia = async (file, setMyMedia, setMedia) => {
+    return fetchDeleteUrl('media/' + file.file_id).then((json) => {
+      console.log('delete', json);
+      setMedia([]);
+      setMyMedia([]);
+      reloadAllMedia(setMedia, setMyMedia);
+    });
+  };
+
   return {
+    getAllMyMedia,
+    deleteMedia,
     getAllMedia,
     getThumbnail,
     signInAsync,
@@ -175,6 +210,7 @@ const mediaAPI = () => {
     userFree,
     uploadFile,
     updatedContent,
+    getUserInfo,
   };
 };
 

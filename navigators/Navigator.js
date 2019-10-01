@@ -11,7 +11,7 @@ import Single from '../views/Single';
 import AuthLoading from '../views/AuthLoading';
 import Login from '../views/Login';
 import Upload from '../views/Upload';
-
+import MyFiles from '../views/MyFiles';
 
 const TabNavigator = createBottomTabNavigator(
   {
@@ -55,6 +55,9 @@ const StackNavigator = createStackNavigator(
     },
     Single: {
       screen: Single,
+    },
+    MyFiles: {
+      screen: MyFiles,
     },
       Logout: {
         screen: Login,

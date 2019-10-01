@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "expo": "^34.0.1",
+    "expo-av": "^6.0.0",
     "expo-constants": "^6.0.0",
     "expo-font": "^6.0.1",
     "expo-image-picker": "^6.0.0",
@@ -26,7 +27,9 @@
     "validate.js": "^0.13.1"
   },
   "devDependencies": {
-    "babel-preset-expo": "^6.0.0"
+    "@babel/core": "^7.6.2",
+    "babel-preset-expo": "^6.0.0",
+    "babelify": "^10.0.0"
   },
   "private": true
 }

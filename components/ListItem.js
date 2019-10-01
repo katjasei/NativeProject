@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, Image} from 'react-native';
-import { ListItem as BaseListItem, Content, Text, Card, CardItem,  Left, Body } from 'native-base';
+import { Image} from 'react-native';
+import { ListItem as BaseListItem, Content, Text, Card, CardItem, Body } from 'native-base';
 import mediaAPI from '../hooks/ApiHooks';
 
 base_url = "http://media.mw.metropolia.fi/wbma/uploads/";
@@ -11,11 +11,11 @@ const ListItem = (props) => {
   const {navigation,singleMedia} = props;
   const {getThumbnail} = mediaAPI();
   const tn = getThumbnail(singleMedia.file_id);
-  console.log('thumbnails', tn);
+
 
   return (
 
-<BaseListItem onPress={() => {console.log('klik');
+<BaseListItem onPress={() => {
     navigation.push('Single', {file: singleMedia});
       }}>
 <Content>

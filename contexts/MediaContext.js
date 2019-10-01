@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
@@ -6,10 +5,12 @@ const MediaContext = React.createContext({});
 const MediaProvider = (props) => {
   const {
     media: initialMedia,
+    myMedia: initialMyMedia,
     user: initialUser,
     children,
   } = props;
   const [media, setMedia] = useState(initialMedia);
+  const [myMedia, setMyMedia] = useState(initialMyMedia);
   const [user, setUser] = useState(initialUser);
 
   const appContext = {
@@ -17,6 +18,8 @@ const MediaProvider = (props) => {
     setUser,
     media,
     setMedia,
+    myMedia,
+    setMyMedia,
   };
 
   return (
@@ -28,13 +31,15 @@ const MediaProvider = (props) => {
 
 MediaProvider.propTypes = {
   media: PropTypes.array,
+  myMedia: PropTypes.array,
   user: PropTypes.object,
   children: PropTypes.node,
 };
 
 MediaProvider.defaultProps = {
   media: [],
+  myMedia: [],
   user: {},
 };
 
-export {MediaContext, MediaProvider}
+export {MediaContext, MediaProvider};
